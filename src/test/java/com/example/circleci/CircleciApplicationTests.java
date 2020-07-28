@@ -10,7 +10,7 @@ class CircleciApplicationTests {
 
 	@Test
 	void contextLoads() {
-		log.info("SpringBootTest test-------------");
+		log.info("SpringBootTest test--------------");
 	}
 
 }
