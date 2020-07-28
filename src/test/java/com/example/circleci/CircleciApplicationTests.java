@@ -12,5 +12,9 @@ class CircleciApplicationTests {
 	void contextLoads() {
 		log.info("SpringBootTest test--------------");
 	}
+	@Test
+	void test002(){
+		log.info("test002----");
+	}
 
 }
