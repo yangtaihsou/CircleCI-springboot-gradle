@@ -9,5 +9,8 @@ public class APPTest {
   public void test(){
     log.info("APPTest test-------------");
   }
-
+  @Test
+  public void test003(){
+    
+  }
 }
