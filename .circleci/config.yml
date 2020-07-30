@@ -37,6 +37,9 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run: gradle clean build
+      - run: gradle hello
       - run:
           name: gradle build
           working_directory: ~/CircleCI-springboot-gradle
