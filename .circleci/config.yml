@@ -43,6 +43,7 @@ jobs:
           command: |
             gradle wrapper
             gradle -v
+            gradle build
             gradle clean build
             gradle test
             gradle hello
