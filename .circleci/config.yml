@@ -41,7 +41,8 @@ jobs:
       - run: gradle clean build
       - run: gradle hello
       - run: pwd
-      working_directory: ~/CircleCI-springboot-gradle
+      - run:
+          working_directory: ~/CircleCI-springboot-gradle
       - run: pwd
       - run: ls
       - run:
