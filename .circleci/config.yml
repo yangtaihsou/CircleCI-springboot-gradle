@@ -43,6 +43,9 @@ jobs:
       - run: pwd
       - run:
           working_directory: ~/CircleCI-springboot-gradle
+          command: |
+            pwd
+            ls
       - run: pwd
       - run: ls
       - run:
