@@ -41,6 +41,8 @@ jobs:
       - run: gradle clean build
       - run: gradle hello
       - run: pwd
+      - working_directory: ~/repo
+      - run: pwd
       - run: ls
       - run:
           name: gradle build
