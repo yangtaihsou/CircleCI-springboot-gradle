@@ -41,7 +41,6 @@ jobs:
           name: gradle build
           working_directory: ~/CircleCI-springboot-gradle
           command: |
-            gradle hello
             gradle wrapper
             gradle -v
             gradle clean build
