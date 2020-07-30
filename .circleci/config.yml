@@ -43,6 +43,8 @@ jobs:
           command: |
             pwd
             ls
+            gradle tasks --all
+            gradle tasks --all|grep hello
             gradle wrapper
             gradle -v
             gradle build
