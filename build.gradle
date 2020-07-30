@@ -36,5 +36,12 @@ test {
     useJUnitPlatform()
 }
 
+task hello {
+    doLast {
+        println '################'
+        println 'Hello circile-test!'
+        println '################'
+    }
+}
 
 
