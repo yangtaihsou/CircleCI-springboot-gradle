@@ -38,13 +38,13 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
       - run:
-        name: gradle build
-        working_directory: ~/CircleCI-springboot-gradle
-        command: |
-          gradle hello
-          gradle wrapper
-          gradle -v
-          gradle clean build
-          gradle hello1
-          # run tests!
-          gradle test
+          name: gradle build
+          working_directory: ~/CircleCI-springboot-gradle
+          command: |
+            gradle hello
+            gradle wrapper
+            gradle -v
+            gradle clean build
+            gradle hello1
+            # run tests!
+            gradle test

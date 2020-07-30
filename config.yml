@@ -1,0 +1,109 @@
+# TODO(Xiao): Instead of manual editing this file, change to scriptable way
+version: 2.1
+
+executors:
+  searchquality-cws:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/search-quality
+
+  searchquality-segments-etl:
+    docker:
+      - image: circleci/python:3.7.6
+    # TODO(Xiao): Update working dir, this is purely for testing purpose
+    working_directory: ~/search-quality
+
+
+
+commands:
+  setup_aws_env:
+    steps:
+      - run:
+          name: Set up AWS CLI
+          working_directory: '~'
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install unzip python-minimal -y
+
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+  
+  run_code_coverage:
+    steps:
+      - run:
+          name: Run Code Coverage check
+          working_directory: ~/search-quality/hot_listings/src/python/segments_etl/
+          command: |
+            pip install codecov
+            coverage run -m unittest && coverage report && coverage xml
+            bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+
+workflows:
+  ci:
+    jobs:
+      - docker-build-and-push-cws:
+          filters:
+            branches:
+              only:
+              - master
+              - PomToGradle
+      - docker-build-and-push-segments-etl:
+          filters:
+            branches:
+              only: master
+
+jobs:
+  docker-build-and-push-cws:
+    executor: searchquality-cws
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker
+      - setup_aws_env
+      - run:
+          name: Git Tag
+          working_directory: ~/search-quality/cws
+          command: |
+            export TAG=$(date +"%Y-%m-%d")-searchquality-cws-$(git log --format="%h" -n 1)
+            git tag ${TAG}
+            git push origin ${TAG}
+      - run:
+          name: Docker Build
+          working_directory: ~/search-quality/cws
+          command: |
+            export TAG=$(date +"%Y-%m-%d")-searchquality-cws-$(git log --format="%h" -n 1)
+            gradle dependencies
+            gradle clean build
+            docker build -t backendapps-searchinfra-searchquality:$TAG .       
+      - run:
+          name: Docker Push
+          working_directory: ~/search-quality/cws
+          command: |
+            export TAG=$(date +"%Y-%m-%d")-searchquality-cws-$(git log --format="%h" -n 1)
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 928990672971.dkr.ecr.us-east-1.amazonaws.com
+            docker tag backendapps-searchinfra-searchquality:$TAG 928990672971.dkr.ecr.us-east-1.amazonaws.com/backendapps-searchinfra-searchquality:$TAG
+            docker push 928990672971.dkr.ecr.us-east-1.amazonaws.com/backendapps-searchinfra-searchquality:$TAG
+
+  docker-build-and-push-segments-etl:
+    executor: searchquality-segments-etl
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker
+      - setup_aws_env
+      - run_code_coverage
+      - run:
+          name: Docker build and push
+          # TODO(Xiao): Update after testing
+          working_directory: ~/search-quality/hot_listings/src/python/segments_etl/
+          command: |
+            export TAG=$(date +"%Y-%m-%d")-searchquality-segments-etl-$(git log --format="%h" -n 1) 
+            git tag $TAG 
+            git push origin $TAG
+            # CircleCi Python image should have pip stuff taken cared
+            sh bundle.sh
+            docker build -t backendapps-searchinfra-searchquality-segments-etl:$TAG .
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 928990672971.dkr.ecr.us-east-1.amazonaws.com
+            docker tag backendapps-searchinfra-searchquality-segments-etl:$TAG 928990672971.dkr.ecr.us-east-1.amazonaws.com/backendapps-searchinfra-searchquality-segments-etl:$TAG
+            docker push 928990672971.dkr.ecr.us-east-1.amazonaws.com/backendapps-searchinfra-searchquality-segments-etl:$TAG
