@@ -38,12 +38,10 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      - run: gradle hello
+      - run: gradle wrapper
+      - run: gradle -v
+      - run: gradle clean build
+      - run: gradle hello1
       # run tests!
-      - run:
-        command: |
-          gradle hello
-          gradle wrapper
-          gradle -v
-          gradle dependencies
-          gradle clean build
-          gradle test
+      - run: gradle test
