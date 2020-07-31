@@ -48,6 +48,7 @@ jobs:
             ./gradlew hello
             ls build/libs
             nohup java -jar build/libs/CircleCI-springboot-gradle-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &
+            sleep 20s
             cat log.txt
             curl 'http://127.0.0.1:8080/'
       - run:
