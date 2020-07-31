@@ -47,7 +47,7 @@ jobs:
             ./gradlew clean build
             ./gradlew hello
             ls build/libs
-            java -jar build/libs/circile-test-0.0.1-SNAPSHOT.jar
+            java -jar build/libs/CircleCI-springboot-gradle-0.0.1-SNAPSHOT.jar
             curl 'http://127.0.0.1:8080/'
       - run:
           name : docker build and push
@@ -55,6 +55,7 @@ jobs:
           command: |
             pwd
             ls
+            ls var/lib/docker/tmp/docker-builder215482909/build/libs/
             docker images
             export TAG=$(date +"%Y-%m-%d")-circleci-sb-gradle-$(git log --format="%h" -n 1)
             docker build -t circleci-sb-gradle:$TAG .
