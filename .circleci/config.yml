@@ -65,10 +65,17 @@ jobs:
             #https://circleci.com/docs/2.0/building-docker-images/
             docker run -itd --name gradledemo -p 8070:8080 circleci-sb-gradle:$TAG
             docker container ls
+            sleep 20s
             # Failed to connect to 127.0.0.1 port 8080: Connection refused
-            #docker exec gradledemo curl http://localhost:8080
+            echo 111111111
+            docker exec gradledemo curl http://localhost:8080
+            echo 222222222
             docker run --network container:gradledemo appropriate/curl http://localhost:8080
+            echo 333333333
+            curl http://localhost:8070
             docker login -u "yangkuan2017" -p "qjsnpa"
             docker tag circleci-sb-gradle:$TAG  yangkuan2017/circleci-sb-gradle:$TAG
             docker push yangkuan2017/circleci-sb-gradle:$TAG
+
+
 
