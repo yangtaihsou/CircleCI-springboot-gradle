@@ -47,7 +47,8 @@ jobs:
             ./gradlew clean build
             ./gradlew hello
             ls build/libs
-      - run: docker build and push
+      - run:
+          name : docker build and push
           command: |
             docker images
             docker login -u "yangkuan2017" -p "qjsnpa"
