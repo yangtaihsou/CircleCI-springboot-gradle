@@ -59,7 +59,6 @@ jobs:
             docker build -t circleci-sb-gradle:$TAG .
             docker images
             docker run -itd -p 8070:8080 circleci-sb-gradle:$TAG
-            curl 'http://127.0.0.1:8070/'
             docker container ls
             docker login -u "yangkuan2017" -p "qjsnpa"
             docker tag circleci-sb-gradle:$TAG  yangkuan2017/circleci-sb-gradle:$TAG
