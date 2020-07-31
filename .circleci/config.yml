@@ -61,8 +61,9 @@ jobs:
             #This will run a new remote docker. Local is another docker. so cann't request  http://127.0.0.1:8070
             #https://circleci.com/docs/2.0/building-docker-images/
             docker run -itd --name gradledemo -p 8070:8080 circleci-sb-gradle:$TAG
-            docker exec gradledemo curl http://127.0.0.1:8080
             docker container ls
+            # Failed to connect to 127.0.0.1 port 8080: Connection refused
+            docker exec gradledemo curl http://localhost:8080
             docker login -u "yangkuan2017" -p "qjsnpa"
             docker tag circleci-sb-gradle:$TAG  yangkuan2017/circleci-sb-gradle:$TAG
             docker push yangkuan2017/circleci-sb-gradle:$TAG
