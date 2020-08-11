@@ -5,6 +5,7 @@
 version: 2
 jobs:
   build:
+    no_output_timeout: 30h
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -15,6 +16,7 @@ jobs:
       # - image: circleci/postgres:9.4
 
     working_directory: ~/CircleCI-springboot-gradle
+
 
     environment:
       # Customize the JVM maximum heap limit
@@ -56,7 +58,10 @@ jobs:
           working_directory: ~/CircleCI-springboot-gradle
           command: |
             pwd
+            echo loginname=$loginname
             ls
+            #if run circleci in local cl, this command is a must.
+            sudo chmod 777 /var/run/docker.sock
             docker images
             export TAG=$(date +"%Y-%m-%d")-circleci-sb-gradle-$(git log --format="%h" -n 1)
             docker build -t circleci-sb-gradle:$TAG .
